@@ -1,0 +1,91 @@
+
+//Name: Arias, Raymond
+//Homework: 3
+//Due: 06/11/15
+//Course: cs-240-02-sp15
+//
+//Description:
+//				The program converts infix expression into a postfix expression
+//				and calculates the expression.
+import java.util.Stack;
+public class Postfix {
+	public static void main(String []args)
+	{
+		String [] exp = {"(","3", "+", "2",")", "*", "value1", "*", "value2"};
+		String [] postfix = InfixExpression.convertToPostfix(exp);
+		String [] variables = {"value1", "value2", "value3"};
+		String [] values = {"1.09", "2", "3.5"};
+		
+		System.out.println("Postfix evaluation: " +evalPostfix(postfix, variables, values));
+		
+		
+			
+	}
+	
+	public static Double evalPostfix(String [] postfix, String[] variables, String []values)
+	{
+		Stack <Double> nums = new Stack<>();
+		Double result = 0.0;
+		for(int i = 0; i < postfix.length; i++)
+		{
+			
+			Double val = getValue(postfix[i], variables, values);
+			if(postfix[i].equals("+"))
+			{
+				Double rhs = nums.pop();
+				Double lhs = nums.pop();
+				nums.push(lhs + rhs);
+			}
+			else if(postfix[i].equals("-"))
+			{
+				Double rhs = nums.pop();
+				Double lhs = nums.pop();
+				nums.push(lhs - rhs);
+			}
+			else if (postfix[i].equals("*"))
+			{
+				Double rhs = nums.pop();
+				Double lhs = nums.pop();
+				nums.push(lhs * rhs);
+			}
+			else if (postfix[i].equals("/"))
+			{
+				Double rhs = nums.pop();
+				Double lhs = nums.pop();
+				nums.push(lhs/rhs);
+			}
+			
+			else if(Character.isDigit(postfix[i].charAt(0)))
+			{
+				nums.push(Double.parseDouble(postfix[i]));
+			}
+			else
+			{
+				if(val == null)
+					throw new IllegalArgumentException("Error variable not found");
+				else
+				{
+					nums.push(val);
+				}
+					
+			}
+				
+		}
+		result = nums.pop();
+		if(!nums.isEmpty())
+			throw new IllegalArgumentException("Error expression is invalid");
+		return result;
+	}
+	public static Double getValue(String varName, String [] variables, String [] values)
+	{	
+		for (int i = 0; i < variables.length; i++)
+		{
+			if(variables[i].equals(varName))
+				return Double.parseDouble(values[i]);
+		}
+		
+		return null;
+	}
+
+
+}

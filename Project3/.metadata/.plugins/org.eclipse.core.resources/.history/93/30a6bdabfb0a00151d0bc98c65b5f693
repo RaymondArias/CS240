@@ -1,0 +1,79 @@
+import java.util.Stack;
+
+
+public class Postfix {
+	public static void main(String []args)
+	{
+		String [] exp = {"3", "+", "2", "*", "value2"};
+		String [] postfix = InfixExpression.convertToPostfix(exp);
+		
+		String [] variables = {"value1", "value2"};
+		String [] values = {"1", "2"};
+		
+		System.out.println(evalPostfix(postfix, variables, values));
+		
+	}
+	
+	public static Double evalPostfix(String [] postfix, String[] variables, String []values)
+	{
+		Stack <Double> nums = new Stack<>();
+		Double result = 0.0;
+		for(int i = 0; i < postfix.length; i++)
+		{
+			
+			Double val = getValue(postfix[i], variables, values);
+			if(postfix[i].equals("+"))
+			{
+				Double rhs = nums.pop();
+				Double lhs = nums.pop();
+				nums.push(lhs + rhs);
+			}
+			else if(postfix[i].equals("-"))
+			{
+				Double rhs = nums.pop();
+				Double lhs = nums.pop();
+				nums.push(lhs - rhs);
+			}
+			else if (postfix[i].equals("*"))
+			{
+				Double rhs = nums.pop();
+				Double lhs = nums.pop();
+				nums.push(lhs * rhs);
+			}
+			else if (postfix[i].equals("/"))
+			{
+				Double rhs = nums.pop();
+				Double lhs = nums.pop();
+				nums.push(lhs/rhs);
+			}
+			else if(val != null)
+			{
+				nums.push(val);
+				//pass value onto stack
+			}
+			else if(Character.isDigit(postfix[i].charAt(0)))
+			{
+				nums.push(Double.parseDouble(postfix[i]));
+			}
+				
+		}
+		result = nums.pop();
+		if(!nums.isEmpty())
+			throw new IllegalArgumentException("Error expression is invalid");
+		return result;
+	}
+	public static Double getValue(String varName, String [] variables, String [] values)
+	{
+		
+		
+		for (int i = 0; i < variables.length; i++)
+		{
+			if(variables[i].equals(varName))
+				return Double.parseDouble(values[i]);
+		}
+		
+		return null;
+	}
+
+
+}
